@@ -3,25 +3,28 @@ package entity;
 import java.time.LocalDateTime;
 
 public class SuatChieu {
-    private String maSuatChieu;
-    private LocalDateTime thoiGianBatDau;
-    private LocalDateTime thoiGianKetThuc;
-    private Phim phim;
-    private Phong phong;
-    private LoaiSuatChieu loaiSuat;
+	private String maSuatChieu;
+	private LocalDateTime thoiGianBatDau;
+	private LocalDateTime thoiGianKetThuc;
+	private Phim phim;
+	private Phong phong;
+	private LoaiSuatChieu loaiSuat;
+	private int phongChieu;
 
-    public SuatChieu() {}
+	public SuatChieu() {
+	}
 
-    public SuatChieu(String maSuatChieu, LocalDateTime thoiGianBatDau,
-                     LocalDateTime thoiGianKetThuc, Phim phim, Phong phong, LoaiSuatChieu loaiSuat) {
-        this.maSuatChieu = maSuatChieu;
-        this.thoiGianBatDau = thoiGianBatDau;
-        this.thoiGianKetThuc = thoiGianKetThuc;
-        this.phim = phim;
-        this.phong = phong;
-        this.loaiSuat = loaiSuat;
-    }
+	public SuatChieu(String maSuatChieu, LocalDateTime thoiGianBatDau, LocalDateTime thoiGianKetThuc, Phim phim,
+			Phong phong, LoaiSuatChieu loaiSuat) {
+		this.maSuatChieu = maSuatChieu;
+		this.thoiGianBatDau = thoiGianBatDau;
+		this.thoiGianKetThuc = thoiGianKetThuc;
+		this.phim = phim;
+		this.phong = phong;
+		this.loaiSuat = loaiSuat;
+	}
 
+	// Getter & Setter
 	public String getMaSuatChieu() {
 		return maSuatChieu;
 	}
@@ -72,8 +75,7 @@ public class SuatChieu {
 
 	@Override
 	public String toString() {
-		return "SuatChieu [maSuatChieu=" + maSuatChieu + ", thoiGianBatDau=" + thoiGianBatDau + ", thoiGianKetThuc="
-				+ thoiGianKetThuc + ", phim=" + phim + ", phong=" + phong + ", loaiSuat=" + loaiSuat + "]";
+		return thoiGianBatDau + " - ";
 	}
 
 }
