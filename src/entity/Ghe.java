@@ -1,23 +1,24 @@
 package entity;
 
 public class Ghe {
-    private String maGhe;
-    private String tenGhe;
-    private double giaGhe;
-    private LoaiGhe loaiGhe;
-    private TrangThai trangThai;
-    private Phong phong;
+	private String maGhe;
+	private String tenGhe;
+	private double giaGhe;
+	private LoaiGhe loaiGhe;
+	private TrangThai trangThai;
+	private Phong phong;
 
-    public Ghe() {}
+	public Ghe() {
+	}
 
-    public Ghe(String maGhe, String tenGhe, double giaGhe, LoaiGhe loaiGhe, TrangThai trangThai, Phong phong) {
-        this.maGhe = maGhe;
-        this.tenGhe = tenGhe;
-        this.giaGhe = giaGhe;
-        this.loaiGhe = loaiGhe;
-        this.trangThai = trangThai;
-        this.phong = phong;
-    }
+	public Ghe(String maGhe, String tenGhe, double giaGhe, LoaiGhe loaiGhe, TrangThai trangThai, Phong phong) {
+		this.maGhe = maGhe;
+		this.tenGhe = tenGhe;
+		this.giaGhe = giaGhe;
+		this.loaiGhe = loaiGhe;
+		this.trangThai = trangThai;
+		this.phong = phong;
+	}
 
 	public String getMaGhe() {
 		return maGhe;
