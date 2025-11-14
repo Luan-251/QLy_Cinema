@@ -24,12 +24,12 @@ import entity.SuatChieu;
 public class Ve_GUI extends JFrame implements ActionListener {
 
 	private JComboBox<Phim> cboTenPhim;
-	private JComboBox<String> cboPhong;
 	private JComboBox<SuatChieu> cboSuatChieu;
 	private JButton btnChonGhe, btnXacNhan;
 
-	private JLabel lblGiaTriTenPhim, lblGiaTriTenPhong, lblGiaTriThoiLuong, lblGiaTriTheLoai, lblGiaTriTGBatDau,
-			lblGiaTriGheDaChon;
+	private JLabel lblGiaTriTenPhim, lblGiaTriThoiLuong, lblGiaTriTheLoai;
+	private JLabel lblGiaTriTGBatDau, lblGiaTriMaPhong, lblGiaTriGheDaChon;
+	private JLabel lblGiaVe, lblGiaTriTongTien;
 
 	private ArrayList<String> gheDaChon = new ArrayList<>();
 
@@ -49,21 +49,17 @@ public class Ve_GUI extends JFrame implements ActionListener {
 		JPanel pMain = new JPanel(new BorderLayout(10, 10));
 		pMain.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		// ===== PHẦN TRÊN: CHỌN PHIM - PHÒNG - SUẤT CHIẾU =====
-		JPanel pChon = new JPanel(new GridLayout(3, 2, 10, 10));
+		// ===== CHỌN PHIM – SUẤT CHIẾU =====
+		JPanel pChon = new JPanel(new GridLayout(2, 2, 10, 10));
 
 		JLabel lblPhim = new JLabel("Phim:");
-		JLabel lblPhong = new JLabel("Phòng:");
 		JLabel lblSuat = new JLabel("Suất chiếu:");
 
 		cboTenPhim = new JComboBox<>();
-		cboPhong = new JComboBox<>();
 		cboSuatChieu = new JComboBox<>();
 
 		pChon.add(lblPhim);
 		pChon.add(cboTenPhim);
-//		pChon.add(lblPhong);
-//		pChon.add(cboPhong);
 		pChon.add(lblSuat);
 		pChon.add(cboSuatChieu);
 
@@ -72,37 +68,43 @@ public class Ve_GUI extends JFrame implements ActionListener {
 		pNorth.add(pChon, BorderLayout.CENTER);
 		pNorth.add(btnChonGhe, BorderLayout.EAST);
 
-		// ===== PHẦN GIỮA: THÔNG TIN VÉ =====
-		JPanel pThongTin = new JPanel(new GridLayout(6, 2, 10, 10));
+		// ===== THÔNG TIN VÉ =====
+		JPanel pThongTin = new JPanel(new GridLayout(8, 2, 10, 10)); // 8 dòng
 		pThongTin.setBorder(BorderFactory.createTitledBorder("Thông tin vé"));
 
 		lblGiaTriTenPhim = new JLabel("");
-		lblGiaTriTenPhong = new JLabel("");
 		lblGiaTriThoiLuong = new JLabel("");
 		lblGiaTriTheLoai = new JLabel("");
 		lblGiaTriTGBatDau = new JLabel("");
+		lblGiaTriMaPhong = new JLabel("");
 		lblGiaTriGheDaChon = new JLabel("Chưa chọn ghế");
 		lblGiaTriGheDaChon.setForeground(Color.RED);
+		lblGiaVe = new JLabel("0");
+		lblGiaTriTongTien = new JLabel("0");
 
 		pThongTin.add(new JLabel("Tên phim:"));
 		pThongTin.add(lblGiaTriTenPhim);
-		pThongTin.add(new JLabel("Tên phòng:"));
-		pThongTin.add(lblGiaTriTenPhong);
 		pThongTin.add(new JLabel("Thời lượng:"));
 		pThongTin.add(lblGiaTriThoiLuong);
 		pThongTin.add(new JLabel("Thể loại:"));
 		pThongTin.add(lblGiaTriTheLoai);
 		pThongTin.add(new JLabel("Thời gian bắt đầu:"));
 		pThongTin.add(lblGiaTriTGBatDau);
+		pThongTin.add(new JLabel("Mã phòng:"));
+		pThongTin.add(lblGiaTriMaPhong);
 		pThongTin.add(new JLabel("Ghế đã chọn:"));
 		pThongTin.add(lblGiaTriGheDaChon);
+		pThongTin.add(new JLabel("Giá vé:"));
+		pThongTin.add(lblGiaVe);
+		pThongTin.add(new JLabel("Tổng tiền:"));
+		pThongTin.add(lblGiaTriTongTien);
 
-		// ===== PHẦN DƯỚI: NÚT XÁC NHẬN =====
+		// ===== NÚT XÁC NHẬN =====
 		btnXacNhan = new JButton("Xác nhận đặt vé");
 		JPanel pSouth = new JPanel();
 		pSouth.add(btnXacNhan);
 
-		// ===== THÊM VÀO GIAO DIỆN =====
+		// ===== ĐƯA VÀO GIAO DIỆN =====
 		pMain.add(pNorth, BorderLayout.NORTH);
 		pMain.add(pThongTin, BorderLayout.CENTER);
 		pMain.add(pSouth, BorderLayout.SOUTH);
@@ -114,15 +116,13 @@ public class Ve_GUI extends JFrame implements ActionListener {
 		btnChonGhe.addActionListener(this);
 		btnXacNhan.addActionListener(this);
 
-		// ===== TẢI DỮ LIỆU BAN ĐẦU =====
+		// ===== TẢI DỮ LIỆU =====
 		loadPhim();
 	}
 
-	// ==================== HÀM XỬ LÝ ====================
-
+	// ==================== LOAD DATA ====================
 	private void loadPhim() {
 		ArrayList<Phim> dsPhim = phimDAO.getAllPhim();
-
 		cboTenPhim.removeAllItems();
 		for (Phim p : dsPhim) {
 			cboTenPhim.addItem(p);
@@ -137,6 +137,7 @@ public class Ve_GUI extends JFrame implements ActionListener {
 		}
 	}
 
+	// ==================== GHẾ ====================
 	void capNhatGheDaChon(ArrayList<String> dsGhe) {
 		this.gheDaChon = dsGhe;
 		Collections.sort(this.gheDaChon);
@@ -148,10 +149,16 @@ public class Ve_GUI extends JFrame implements ActionListener {
 			lblGiaTriGheDaChon.setText(String.join(", ", dsGhe));
 			lblGiaTriGheDaChon.setForeground(Color.BLUE);
 		}
+
+		// Cập nhật tổng tiền
+		if (cboSuatChieu.getSelectedItem() != null) {
+			SuatChieu suat = (SuatChieu) cboSuatChieu.getSelectedItem();
+			double tongTien = suat.getPhim().getGiaPhim() * dsGhe.size();
+			lblGiaTriTongTien.setText(String.format("%.0f", tongTien));
+		}
 	}
 
-	// ==================== ACTION ====================
-
+	// ==================== SỰ KIỆN ====================
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
@@ -161,18 +168,27 @@ public class Ve_GUI extends JFrame implements ActionListener {
 			if (selectedPhim != null) {
 				loadSuatChieu(selectedPhim);
 
-				// ✅ Lấy thông tin phim từ DB
 				lblGiaTriTenPhim.setText(selectedPhim.getTenPhim());
 				lblGiaTriThoiLuong.setText(selectedPhim.getThoiLuong() + " phút");
 				lblGiaTriTheLoai.setText(selectedPhim.getTheLoai());
+				lblGiaVe.setText(String.format("%.0f", selectedPhim.getGiaPhim()));
+
+				// Reset thông tin khi đổi phim
+				lblGiaTriTGBatDau.setText("");
+				lblGiaTriMaPhong.setText("");
+				capNhatGheDaChon(new ArrayList<>());
 			}
 
 		} else if (src == cboSuatChieu) {
 			SuatChieu selectedSuat = (SuatChieu) cboSuatChieu.getSelectedItem();
 			if (selectedSuat != null) {
-				// ✅ Lấy thông tin suất chiếu từ DB
-				lblGiaTriTenPhong.setText(selectedSuat.getPhong().getMaPhong());
 				lblGiaTriTGBatDau.setText(selectedSuat.getThoiGianBatDau().toString());
+				lblGiaTriMaPhong.setText(selectedSuat.getPhong().getMaPhong());
+
+				// Cập nhật giá vé và tổng tiền nếu đã chọn ghế
+				lblGiaVe.setText(String.format("%.0f", selectedSuat.getPhim().getGiaPhim()));
+				double tongTien = selectedSuat.getPhim().getGiaPhim() * gheDaChon.size();
+				lblGiaTriTongTien.setText(String.format("%.0f", tongTien));
 			}
 
 		} else if (src == btnChonGhe) {
@@ -182,10 +198,10 @@ public class Ve_GUI extends JFrame implements ActionListener {
 				return;
 			}
 
-			SuatChieu suatChieu = (SuatChieu) cboSuatChieu.getSelectedItem();
-			String maPhong = suatChieu.getPhong().getMaPhong();
+			SuatChieu suat = (SuatChieu) cboSuatChieu.getSelectedItem();
+			String maPhong = suat.getPhong().getMaPhong();
 
-			// ✅ Mở giao diện chọn ghế
+			// Giả sử bạn có ChonGhe_GUI để chọn ghế, truyền gheDaChon
 			ChonGhe_GUI chonGhe = new ChonGhe_GUI(this, maPhong, this, gheDaChon);
 			chonGhe.setVisible(true);
 
@@ -193,8 +209,8 @@ public class Ve_GUI extends JFrame implements ActionListener {
 			if (gheDaChon.isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Chưa chọn ghế!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(this, "🎉 Đặt vé thành công!\nGhế: " + String.join(", ", gheDaChon),
-						"Thành công", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "🎉 Đặt vé thành công!\nGhế: " + String.join(", ", gheDaChon)
+						+ "\nTổng tiền: " + lblGiaTriTongTien.getText(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 	}
