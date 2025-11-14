@@ -92,7 +92,7 @@ public class Phim_GUI extends JFrame {
         txtMaPhim = new JTextField(12);
         txtTenPhim = new JTextField(18);
         txtSuatChieu = new JTextField(18);
-        //txtSuatChieu.setEditable(false);
+        txtSuatChieu.setEditable(false);
         txtThoiLuong = new JTextField(6);
         txtTenDaoDien = new JTextField(12);
         txtTenDienVien = new JTextField(12);
