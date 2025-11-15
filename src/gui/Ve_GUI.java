@@ -16,10 +16,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import dao.GheDAO;
 import dao.PhimDAO;
 import dao.SuatChieuDAO;
+import dao.VeDAO;
+import entity.Ghe;
 import entity.Phim;
 import entity.SuatChieu;
+import entity.Ve;
 
 public class Ve_GUI extends JFrame implements ActionListener {
 
@@ -35,6 +39,8 @@ public class Ve_GUI extends JFrame implements ActionListener {
 
 	private PhimDAO phimDAO;
 	private SuatChieuDAO suatChieuDAO;
+	private VeDAO veDAO;
+	private GheDAO gheDAO;
 
 	public Ve_GUI() {
 		setTitle("Đặt vé xem phim");
@@ -45,6 +51,8 @@ public class Ve_GUI extends JFrame implements ActionListener {
 
 		phimDAO = new PhimDAO();
 		suatChieuDAO = new SuatChieuDAO();
+		veDAO = new VeDAO();
+		gheDAO = new GheDAO();
 
 		JPanel pMain = new JPanel(new BorderLayout(10, 10));
 		pMain.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -69,7 +77,7 @@ public class Ve_GUI extends JFrame implements ActionListener {
 		pNorth.add(btnChonGhe, BorderLayout.EAST);
 
 		// ===== THÔNG TIN VÉ =====
-		JPanel pThongTin = new JPanel(new GridLayout(8, 2, 10, 10)); // 8 dòng
+		JPanel pThongTin = new JPanel(new GridLayout(8, 2, 10, 10));
 		pThongTin.setBorder(BorderFactory.createTitledBorder("Thông tin vé"));
 
 		lblGiaTriTenPhim = new JLabel("");
@@ -158,6 +166,77 @@ public class Ve_GUI extends JFrame implements ActionListener {
 		}
 	}
 
+	// ==================== XÁC NHẬN ĐẶT VÉ ====================
+	private void xacNhanDatVe() {
+		if (gheDaChon.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Chưa chọn ghế!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		if (cboSuatChieu.getSelectedItem() == null) {
+			JOptionPane.showMessageDialog(this, "Chưa chọn suất chiếu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		SuatChieu suatChieu = (SuatChieu) cboSuatChieu.getSelectedItem();
+		String maPhong = suatChieu.getPhong().getMaPhong();
+		double giaVe = suatChieu.getPhim().getGiaPhim();
+
+		int soVeThanhCong = 0;
+		int soVeThatBai = 0;
+		ArrayList<String> danhSachMaVe = new ArrayList<>();
+
+		// Tạo vé cho từng ghế
+		for (String tenGhe : gheDaChon) {
+			// Lấy thông tin ghế từ database
+			Ghe ghe = gheDAO.getGheByMaGheAndMaPhong(tenGhe, maPhong);
+
+			if (ghe == null) {
+				System.out.println("⚠️ Không tìm thấy ghế: " + tenGhe + " trong phòng: " + maPhong);
+				soVeThatBai++;
+				continue;
+			}
+
+			// Tạo mã vé mới
+			String maVe = veDAO.taoMaVeMoi();
+			danhSachMaVe.add(maVe);
+
+			// Tạo đối tượng vé
+			Ve ve = new Ve(maVe, giaVe, suatChieu, ghe);
+
+			// Thêm vé vào database
+			boolean ketQua = veDAO.themVe(ve);
+			if (ketQua) {
+				soVeThanhCong++;
+				System.out.println("✅ Đã tạo vé: " + maVe + " cho ghế " + tenGhe);
+			} else {
+				soVeThatBai++;
+				System.out.println("❌ Thất bại khi tạo vé cho ghế " + tenGhe);
+			}
+		}
+
+		// Hiển thị kết quả
+		if (soVeThanhCong > 0) {
+			String thongBao = String.format(
+					"🎉 Đặt vé thành công!\n\n" + "Số vé đã đặt: %d\n" + "Ghế: %s\n" + "Tổng tiền: %s VNĐ\n\n"
+							+ "Mã vé: %s",
+					soVeThanhCong, String.join(", ", gheDaChon), lblGiaTriTongTien.getText(),
+					String.join(", ", danhSachMaVe));
+
+			if (soVeThatBai > 0) {
+				thongBao += "\n\n⚠️ Có " + soVeThatBai + " vé không thể tạo.";
+			}
+
+			JOptionPane.showMessageDialog(this, thongBao, "Thành công", JOptionPane.INFORMATION_MESSAGE);
+
+			// Reset sau khi đặt vé thành công
+			capNhatGheDaChon(new ArrayList<>());
+		} else {
+			JOptionPane.showMessageDialog(this, "❌ Không thể tạo vé!\nVui lòng kiểm tra lại dữ liệu.", "Lỗi",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	// ==================== SỰ KIỆN ====================
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -200,18 +279,14 @@ public class Ve_GUI extends JFrame implements ActionListener {
 
 			SuatChieu suat = (SuatChieu) cboSuatChieu.getSelectedItem();
 			String maPhong = suat.getPhong().getMaPhong();
+			String maSuatChieu = suat.getMaSuatChieu();
 
-			// Giả sử bạn có ChonGhe_GUI để chọn ghế, truyền gheDaChon
-			ChonGhe_GUI chonGhe = new ChonGhe_GUI(this, maPhong, this, gheDaChon);
+			// Constructor: (parent, maPhong, maSuatChieu, parentGui, gheDaChon)
+			ChonGhe_GUI chonGhe = new ChonGhe_GUI(this, maPhong, maSuatChieu, this, gheDaChon);
 			chonGhe.setVisible(true);
 
 		} else if (src == btnXacNhan) {
-			if (gheDaChon.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Chưa chọn ghế!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(this, "🎉 Đặt vé thành công!\nGhế: " + String.join(", ", gheDaChon)
-						+ "\nTổng tiền: " + lblGiaTriTongTien.getText(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
-			}
+			xacNhanDatVe();
 		}
 	}
 
