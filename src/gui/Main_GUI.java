@@ -9,6 +9,7 @@ import javax.swing.*;
 
 public class Main_GUI extends JFrame {
     private JButton btnPhim;  // Chỉ giữ nút phim
+    private JButton btnNhanVien;
     private JLabel lblNorth;
     private JPanel pnlWest;
     private JPanel pnlCenter;
@@ -30,7 +31,7 @@ public class Main_GUI extends JFrame {
         Box b1;
 
         try {
-            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/logo.png"));
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/logo_Cinema.png"));
             int originalWidth = originalIcon.getIconWidth();
             int originalHeight = originalIcon.getIconHeight();
             int maxWidth = 180;
@@ -61,6 +62,11 @@ public class Main_GUI extends JFrame {
         b1 = Box.createHorizontalBox();
         btnPhim = createButton(b1, "Quản lý phim");
         add(pnlWest, BorderLayout.WEST);
+        btnPhim.addActionListener(e -> showPhim());
+
+        Box b2 = Box.createHorizontalBox();
+        btnNhanVien = createButton(b2, "Quản lý nhân viên");
+        btnNhanVien.addActionListener(e -> showNhanVien());
 
         // Panel trung tâm
         pnlCenter = new JPanel();
@@ -81,14 +87,29 @@ public class Main_GUI extends JFrame {
 
     private void showPhim() {
         lblNorth.setText("QUẢN LÝ PHIM");
+        resetButtonColor();
         Phim_GUI pnlPhim = new Phim_GUI(); // Giả định Phim_GUI là JFrame
         // Lấy nội dung bên trong của JFrame và add vào panel
         updateCenterPanel(pnlPhim.getContentPane());
-        
         // Đổi màu nút đang được chọn (nếu cần)
         btnPhim.setBackground(new Color(34, 139, 34));
     }
+    
+    private void showNhanVien() {
+        lblNorth.setText("QUẢN LÝ NHÂN VIÊN");
+        resetButtonColor();
+        NhanVien_GUI pnlNV = new NhanVien_GUI(); // giả sử NhanVien_GUI extends JFrame
+        updateCenterPanel(pnlNV.getContentPane());
+        btnNhanVien.setBackground(new Color(34, 139, 34)); // đổi màu khi được chọn
+    }
 
+    private void resetButtonColor() {
+        Color normalColor = new Color(0xF5F5DC); // màu default
+        btnPhim.setBackground(normalColor);
+        btnNhanVien.setBackground(normalColor);
+    }
+
+    
     private void updateCenterPanel(Component panel) {
         pnlCenter.removeAll();                      // Xóa giao diện cũ
         pnlCenter.add(panel, BorderLayout.CENTER);  // Thêm giao diện mới
@@ -98,8 +119,8 @@ public class Main_GUI extends JFrame {
 
     private JButton createButton(Box box, String nameBtn) {
         Color defaultColor = new Color(0xF5F5DC); // Beige nhạt
-        Color hoverColor = new Color(0x000000); // den 
-        Color textColor = new Color(0x000000); // den
+        Color hoverColor = new Color(0xF5F5F5); // den 
+        Color textColor = new Color(0xF5F5F5); // den
         Color hoverTextColor = Color.red;
 
         JButton btn = new JButton(nameBtn) {
