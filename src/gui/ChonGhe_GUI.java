@@ -18,13 +18,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import dao.VeDAO;
+
 public class ChonGhe_GUI extends JDialog implements ActionListener {
 
 	private final String maPhong;
+	private final String maSuatChieu;
 	private final Ve_GUI parentGui;
 	private final ArrayList<String> gheDaChonHienTai; // Lưu trạng thái ghế đã chọn trước đó
 
 	private final ArrayList<String> gheChonMoi = new ArrayList<>(); // Lưu ghế mới được chọn
+	private ArrayList<String> gheDaDatTrongDB = new ArrayList<>(); // Ghế đã đặt từ database
 
 	// Màu sắc
 	private final Color COLOR_GHE_TRONG = Color.LIGHT_GRAY;
@@ -32,11 +36,19 @@ public class ChonGhe_GUI extends JDialog implements ActionListener {
 	private final Color COLOR_GHE_DAT = new Color(175, 23, 30); // Đỏ đậm (giống menu)
 	private final Color COLOR_MAN_HINH = new Color(30, 30, 30);
 
-	public ChonGhe_GUI(JFrame parent, String maPhong, Ve_GUI parentGui, ArrayList<String> gheDaChon) {
+	private VeDAO veDAO;
+
+	public ChonGhe_GUI(JFrame parent, String maPhong, String maSuatChieu, Ve_GUI parentGui,
+			ArrayList<String> gheDaChon) {
 		super(parent, "Chọn ghế - " + maPhong, true);
 		this.maPhong = maPhong;
+		this.maSuatChieu = maSuatChieu;
 		this.parentGui = parentGui;
 		this.gheDaChonHienTai = new ArrayList<>(gheDaChon); // Copy danh sách ghế hiện tại
+		this.veDAO = new VeDAO();
+
+		// Lấy danh sách ghế đã đặt từ database
+		gheDaDatTrongDB = veDAO.getGheDaDatBySuatChieu(maSuatChieu, maPhong);
 
 		setSize(800, 600);
 		setLocationRelativeTo(parent);
@@ -64,16 +76,18 @@ public class ChonGhe_GUI extends JDialog implements ActionListener {
 				ghe.setPreferredSize(new Dimension(60, 40));
 				ghe.addActionListener(this);
 
-				// Giả định một số ghế đã được đặt (Ví dụ: B01, C05, E10)
-				if (tenGhe.equals("B01") || tenGhe.equals("C05") || tenGhe.equals("E10")) {
+				// Ghế đã được đặt trong database (không thể chọn)
+				if (gheDaDatTrongDB.contains(tenGhe)) {
 					ghe.setBackground(COLOR_GHE_DAT);
 					ghe.setEnabled(false);
 				}
-				// Xử lý ghế đã được chọn từ Ve_GUI
+				// Ghế đã được chọn từ Ve_GUI (có thể hủy)
 				else if (gheDaChonHienTai.contains(tenGhe)) {
 					ghe.setBackground(COLOR_GHE_CHON);
 					gheChonMoi.add(tenGhe); // Khởi tạo danh sách ghế đang được chọn
-				} else {
+				}
+				// Ghế trống
+				else {
 					ghe.setBackground(COLOR_GHE_TRONG);
 				}
 

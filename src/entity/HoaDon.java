@@ -3,23 +3,24 @@ package entity;
 import java.time.LocalDateTime;
 
 public class HoaDon {
-    private String maHoaDon;
-    private LocalDateTime ngayLap;
-    private double tongTien;
-    private int soVe;
-    private NhanVien nhanVien;
-    private Ve ve;
+	private String maHoaDon;
+	private LocalDateTime ngayLap;
+	private double tongTien;
+	private int soVe;
+	private NhanVien nhanVien;
+	private Ve ve;
 
-    public HoaDon() {}
+	public HoaDon() {
+	}
 
-    public HoaDon(String maHoaDon, LocalDateTime ngayLap, double tongTien, int soVe, NhanVien nhanVien, Ve ve) {
-        this.maHoaDon = maHoaDon;
-        this.ngayLap = ngayLap;
-        this.tongTien = tongTien;
-        this.soVe = soVe;
-        this.nhanVien = nhanVien;
-        this.ve = ve;
-    }
+	public HoaDon(String maHoaDon, LocalDateTime ngayLap, double tongTien, int soVe, NhanVien nhanVien, Ve ve) {
+		this.maHoaDon = maHoaDon;
+		this.ngayLap = ngayLap;
+		this.tongTien = tongTien;
+		this.soVe = soVe;
+		this.nhanVien = nhanVien;
+		this.ve = ve;
+	}
 
 	public String getMaHoaDon() {
 		return maHoaDon;

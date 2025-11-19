@@ -1,19 +1,20 @@
 package entity;
 
 public class Ve {
-    private String maVe;
-    private double giaVe;
-    private SuatChieu suatChieu;
-    private Ghe ghe;
+	private String maVe;
+	private double giaVe;
+	private SuatChieu suatChieu;
+	private Ghe ghe;
 
-    public Ve() {}
+	public Ve() {
+	}
 
-    public Ve(String maVe, double giaVe, SuatChieu suatChieu, Ghe ghe) {
-        this.maVe = maVe;
-        this.giaVe = giaVe;
-        this.suatChieu = suatChieu;
-        this.ghe = ghe;
-    }
+	public Ve(String maVe, double giaVe, SuatChieu suatChieu, Ghe ghe) {
+		this.maVe = maVe;
+		this.giaVe = giaVe;
+		this.suatChieu = suatChieu;
+		this.ghe = ghe;
+	}
 
 	public String getMaVe() {
 		return maVe;
